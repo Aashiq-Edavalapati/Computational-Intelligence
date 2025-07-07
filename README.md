@@ -62,7 +62,6 @@ _**Coming soon!**_
 
 ## 🎒 Resources
 
-* 🖼️ Admin Material: [23CSE474 Administrivia PDF](./resources/23CSE474-Administrivia.pdf)
 * 🧠 Neural Network Playground: [playground.tensorflow.org](https://playground.tensorflow.org/)
 * 🛠️ Tools: NumPy, Matplotlib, Scikit-learn, DEAP (coming soon), FuzzyLite
 
