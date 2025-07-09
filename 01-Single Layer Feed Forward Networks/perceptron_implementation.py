@@ -65,7 +65,7 @@ class Perceptron:
 # --- Example Usage ---
 
 if __name__ == "__main__":
-    # Simple AND gate example
+    # Simple AND gate example (Try using other basic gates as well)
     X = np.array([
         [0, 0],
         [0, 1],

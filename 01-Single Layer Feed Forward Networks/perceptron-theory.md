@@ -17,8 +17,9 @@
     * [Weight Update Rule](#53-weight-update-rule)
     * [Learning Rate](#54-learning-rate)
 6.  [Convergence and Limitations](#6-convergence-and-limitations)
-    * [Linearly Separable Data](#61-linearly-separable-data)
-    * [XOR Problem](#62-xor-problem)
+    * [Convergence of the Perceptron Learning Algorithm](#61-Convergence)
+    * [Linearly Separable Data](#62-linearly-separable-data)
+    * [XOR Problem](#63-xor-problem)
 7.  [Applications](#7-applications)
 8.  [Further Reading](#8-further-reading)
 9.  [See Also](#9-see-also)
@@ -142,12 +143,134 @@ The learning rate is a hyperparameter that controls how much the weights are adj
 
 ## 6. Convergence and Limitations
 
-### 6.1. Linearly Separable Data
+## 6.1. Convergence
+
+### 📘 Perceptron Convergence Proof
+
+Let there be two classes $C_1$ and $C_2$, where $C_1$ and $C_2$ correspond to the training instances for which the output is 1 and 0 respectively.
+
+Using the perceptron learning rule iteratively for $k = 0$ to $K$, we get:
+
+#### Update Equations:
+
+$$
+\mathbf{W}_1 = \mathbf{W}_0 + \alpha \epsilon_0 \mathbf{X}_0 \tag{8.11}
+$$
+
+$$
+\mathbf{W}_2 = \mathbf{W}_1 + \alpha \epsilon_1 \mathbf{X}_1 
+= \mathbf{W}_0 + \alpha \epsilon_0 \mathbf{X}_0 + \alpha \epsilon_1 \mathbf{X}_1 \tag{8.12}
+$$
+
+$$
+\mathbf{W}_{K+1} = \mathbf{W}_K + \alpha \epsilon_K \mathbf{X}_K + \ldots + \alpha \epsilon_0 \mathbf{X}_0 \tag{8.13}
+$$
+
+Assuming $\mathbf{W}_0 = 0$ and $\epsilon_0 = 0$, we have:
+
+$$
+\mathbf{W}_{K+1} = \sum_{j=1}^{K} \alpha \epsilon_j \mathbf{X}_j \tag{8.14}
+$$
+
+---
+
+Let there be a weight vector $\mathbf{W}^*$ that can linearly separate the classes $C_1$ and $C_2$. Pre-multiplying both sides of the last expression by $\mathbf{W}^{*T}$, we get:
+
+$$
+\mathbf{W}^{*T} \mathbf{W}_{K+1} = \alpha \sum_{j=1}^{K} \epsilon_j \mathbf{W}^{*T} \mathbf{X}_j \tag{8.15}
+$$
+
+Since output vectors $\mathbf{X}_j$ are misclassified, $\epsilon_j \mathbf{W}^{*T} \mathbf{X}_j$ is strictly positive. Thus we define:
+
+$$
+a = \min_j \left( \epsilon_j \mathbf{W}^{*T} \mathbf{X}_j \right) \tag{8.16}
+$$
+
+So:
+
+$$
+\mathbf{W}^{*T} \mathbf{W}_{K+1} \geq K \cdot a \tag{8.17}
+$$
+
+By the [Cauchy–Schwarz inequality](w):
+
+$$
+\| \mathbf{W}_{K+1} \|^2 \geq \frac{(\mathbf{W}^{*T} \mathbf{W}_{K+1})^2}{\| \mathbf{W}^* \|^2} \tag{8.18}
+$$
+
+Combining with (8.17):
+
+$$
+\| \mathbf{W}_{K+1} \|^2 \geq \frac{(K \cdot a)^2}{\| \mathbf{W}^* \|^2} \tag{8.19}
+$$
+
+---
+
+#### Bounding the Norm Growth
+
+We square both sides of the update rule:
+
+$$
+\mathbf{W}_{j+1} = \mathbf{W}_j + \alpha \epsilon_j \mathbf{X}_j \Rightarrow 
+\| \mathbf{W}_{j+1} \|^2 = \| \mathbf{W}_j \|^2 + \| \alpha \epsilon_j \mathbf{X}_j \|^2 + 2 \alpha \epsilon_j \mathbf{W}_j^T \mathbf{X}_j \tag{8.20}
+$$
+
+Define:
+
+$$
+Q = \max_j \| \alpha \epsilon_j \mathbf{X}_j \|^2 \tag{8.21}
+$$
+
+Since $\mathbf{X}_j$ is misclassified, $\epsilon_j \mathbf{W}_j^T \mathbf{X}_j < 0$. Thus:
+
+$$
+\| \mathbf{W}_{j+1} \|^2 \leq \| \mathbf{W}_j \|^2 + Q \tag{8.22}
+$$
+
+Adding this up from $j = 1$ to $K$:
+
+$$
+\| \mathbf{W}_{K+1} \|^2 \leq Q \cdot K \tag{8.23}
+$$
+
+---
+
+#### Final Inequality and Convergence
+
+Using (8.19) and (8.23):
+
+$$
+\frac{(K \cdot a)^2}{\| \mathbf{W}^* \|^2} \leq Q \cdot K \tag{8.24}
+$$
+
+Divide both sides by $Q \cdot K$:
+
+$$
+1 \leq \frac{(K \cdot a)^2}{Q \cdot K \cdot \| \mathbf{W}^* \|^2} \Rightarrow 
+1 \leq \frac{K \cdot a^2}{Q \cdot \| \mathbf{W}^* \|^2} \Rightarrow 
+K \leq \frac{Q \cdot \| \mathbf{W}^* \|^2}{a^2} \tag{8.26}
+$$
+
+---
+
+#### ✅ Conclusion
+
+* Since $K$ is bounded above, the Perceptron learning algorithm must **converge in a finite number of steps**.
+* The bound on the number of misclassifications is:
+
+$$
+K_{\max} = \frac{Q \cdot \| \mathbf{W}^* \|^2}{a^2}
+$$
+
+This is the **Perceptron Convergence Theorem**, proving that if the data is linearly separable, the algorithm will find a solution in a finite number of updates.
+
+
+### 6.2. Linearly Separable Data
 
 The Perceptron Convergence Theorem states that if the training data is **linearly separable** (meaning a straight line, plane, or hyperplane can separate the classes), then the Perceptron algorithm is guaranteed to converge to a solution in a finite number of iterations.
 
 ![Linearly Separable data](images/linearly_separable_data.png)
-### 6.2. XOR Problem
+### 6.3. XOR Problem
 
 One of the most significant limitations of the single-layer Perceptron was highlighted by Marvin Minsky and Seymour Papert in their 1969 book "Perceptrons." They demonstrated that a single Perceptron cannot solve problems that are not linearly separable, such as the **Exclusive OR (XOR) problem**.
 
