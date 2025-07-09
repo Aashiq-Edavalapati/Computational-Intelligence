@@ -56,7 +56,7 @@ _**Coming soon!**_
 * Trained on logic gates (AND, OR)
 * Explored weight updates and decision boundaries
 
-📓 [View Jupyter Notebook](./01-SLFN-Single-Layer-Feedforward-Networks/implementation/perceptron_numpy.ipynb)
+📓 [View Implementations](./01-SLFN-Single-Layer-Feedforward-Networks/implementation/perceptron_numpy.ipynb)
 
 ---
 
