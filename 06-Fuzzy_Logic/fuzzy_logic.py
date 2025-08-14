@@ -9,8 +9,6 @@ steps:
 3. Aggregation: Combine fuzzy outputs using the max operator.
 4. Defuzzification: Convert the aggregated fuzzy output into a crisp value
    using the centroid method.
-
-Author: Aashiq Edavalapati
 """
 
 import numpy as np
